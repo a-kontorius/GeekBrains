@@ -13,3 +13,18 @@ print(directories) if len(directories) else print("Текущая директо
 
 # Задача-3:
 # Напишите скрипт, создающий копию файла, из которого запущен данный скрипт.
+
+import os
+import shutil
+
+current_direcotry = os.getcwd()
+current_file = os.path.join(current_direcotry, os.path.basename(__file__))
+
+file_name, file_extension = os.path.splitext(current_file)
+new_file = os.path.join(current_direcotry, file_name + '_copy' + file_extension)
+
+try:
+    dst = shutil.copyfile(current_file, new_file)
+    print("Копия файла создана:", dst)
+except Exception as e:
+    print("Не могу создать копию файла. Ошибка:", e.args[1])
