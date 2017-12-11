@@ -46,7 +46,7 @@ class CityList:
         print("Записываю прочитанную информацию в файл '{}'".format(self.json_file))
 
     def _get_city_list(self):
-        with open(self.json_file, 'r') as f:
+        with open(self.json_file, 'r', encoding="UTF-8") as f:
             self.city_list = json.loads(f.read())
 
     def get_sity_id(self, city_name):
