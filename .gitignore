@@ -1,4 +1,5 @@
 .idea/
 *test*
 *.zip
-__pycahe__/
+*.gz
+__pycache__/
