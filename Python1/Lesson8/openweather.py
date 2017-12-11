@@ -95,18 +95,30 @@ OpenWeatherMap — онлайн-сервис, который предостав�
         ...
 """
 
+
+from Python1.Lesson8.city_list import CityList
+
 #получаем app id из файла app.id
 with open("app.id","r", encoding="UTF-8") as f:
     appid = f.read().strip()
 
-print(appid)
-
-
-from Python1.Lesson8.city_list import CityList
-
-url = "http://bulk.openweathermap.org/sample/city.list.json.gz"
-list_object = CityList(url)
-citys_name = ["Belgorod", "Volgograd"]
-citys_id = []
+url_city_list = "http://bulk.openweathermap.org/sample/city.list.json.gz"
+list_object = CityList(url_city_list)
+citys_name = ["Belgorod", "Volgograd","Bishkek"]
 citys_id = list_object.get_sity_id(citys_name)
-print(citys_id)
+
+#################################### поигрался с погодой немножко
+
+
+# Формируем ссылку на погоду на основе кол-ва городов
+if len(citys_id) == 1:
+    url_weather = "http://api.openweathermap.org/data/2.5/weather?id=" + str(citys_id) + "&units=metric&appid=" +appid
+elif len(citys_id) > 1:
+    goroda = ""
+    for num, id in enumerate(citys_id):
+        goroda += str(id)
+        if num < len(citys_id)-1:
+            goroda +=","
+    url_weather = "http://api.openweathermap.org/data/2.5/group?id=" + goroda + "&units=metric&appid=" + appid
+
+print(url_weather)
