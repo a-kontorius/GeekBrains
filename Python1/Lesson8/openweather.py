@@ -95,17 +95,46 @@ OpenWeatherMap — онлайн-сервис, который предостав�
         ...
 """
 
+import os
+from urllib.request import urlretrieve
+import gzip
 
-#читаем APP ID из файла
 
-def get_app_id(file_app):
-    with open(file_app) as f:
-        return f.read().strip()
-    return None
+def get_file_name_gz(url):
+    return url.split("/")[-1]
 
-app_id = get_app_id("app.id")
 
-if app_id:
-    print(app_id)
+def get_file_name_json(gz_file):
+    last_pos = gz_file.rfind(".")
+    return (gz_file[:last_pos])
+
+
+def download_sity_list(url, file):
+    print("Загружаю архив со списком городов.")
+    urlretrieve(url, file)
+    print("Список загружен. '{}'".format(file))
+
+
+def gunzip_sity_list(gz_file, json_file):
+    print("Читаю содежримое архива '{}'".format(gz_file))
+    with gzip.open(gz_file, 'rb') as gz:
+        file_content = gz.read()
+
+    with open(json_file, 'wb') as json:
+        json.write(file_content)
+
+    print("Записываю прочитанную информацию в файл '{}'".format(json_file))
+
+
+url_sity_list = "http://bulk.openweathermap.org/sample/city.list.json.gz"
+sity_list_gz = get_file_name_gz(url_sity_list)
+sity_list_json = get_file_name_json(sity_list_gz)
+
+# проверяем, есть ли файл или архив с городами
+if os.path.isfile(sity_list_json):
+    pass
+elif os.path.isfile(sity_list_gz):
+    gunzip_sity_list(sity_list_gz, sity_list_json)
 else:
-    print("не могу получить app id")
+    download_sity_list(url_sity_list, sity_list_gz)
+    gunzip_sity_list(sity_list_gz, sity_list_json)
