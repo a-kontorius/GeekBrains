@@ -54,5 +54,14 @@ class CityList:
         for cn in city_name:
             for cl in self.city_list:
                 if cl['name'] == cn:
-                    city_id.append(cl['id'])
+                    city_id.append(str(cl['id']))
         return city_id
+
+
+    def showCountryList(self, country_code):
+        cities_in_country = []
+        for element in self.city_list:
+            if element["country"] == country_code:
+                cities_in_country.append(str(element['id']))
+
+        return cities_in_country

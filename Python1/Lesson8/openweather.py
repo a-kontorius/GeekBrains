@@ -96,29 +96,62 @@ OpenWeatherMap — онлайн-сервис, который предостав�
 """
 
 
+#from city_list import CityList
 from Python1.Lesson8.city_list import CityList
 
 #получаем app id из файла app.id
-with open("app.id","r", encoding="UTF-8") as f:
-    appid = f.read().strip()
+def get_appid():
+    with open("app.id","r", encoding="UTF-8") as f:
+       return f.read().strip()
 
+appid = get_appid()
+country_code = "UA"
 url_city_list = "http://bulk.openweathermap.org/sample/city.list.json.gz"
 list_object = CityList(url_city_list)
-citys_name = ["Belgorod", "Volgograd","Bishkek"]
-citys_id = list_object.get_sity_id(citys_name)
-
-#################################### поигрался с погодой немножко
+cities_id = list_object.showCountryList(country_code)
+#cities_id = list_object.get_sity_id(["Belgorod"])
 
 
-# Формируем ссылку на погоду на основе кол-ва городов
-if len(citys_id) == 1:
-    url_weather = "http://api.openweathermap.org/data/2.5/weather?id=" + str(citys_id) + "&units=metric&appid=" +appid
-elif len(citys_id) > 1:
-    goroda = ""
-    for num, id in enumerate(citys_id):
-        goroda += str(id)
-        if num < len(citys_id)-1:
-            goroda +=","
-    url_weather = "http://api.openweathermap.org/data/2.5/group?id=" + goroda + "&units=metric&appid=" + appid
+# Загружаем json файл с данными о погоде для каждого из городов в списке
+from urllib.request import urlretrieve
+import os
 
-print(url_weather)
+dest_dir = "weather"
+if not os.path.exists(dest_dir):
+    os.makedirs(dest_dir)
+    dest_dir += "/" + country_code
+
+
+if not os.path.exists(dest_dir):
+    os.makedirs(dest_dir)
+
+for gorod in cities_id:
+    dest_file = gorod + ".json"
+    dest_path = os.path.join(dest_dir, dest_file)
+    url_weather = "http://api.openweathermap.org/data/2.5/weather?id=" + gorod + "&units=metric&appid=" + appid
+    print("Загружаю '{}'".format(dest_file))
+    urlretrieve(url_weather, dest_path)
+
+
+# #Основное меню
+# # answer = -1
+# # while answer != 0:
+# #     print("Укажите какое действие нужно выполнить:")
+# #     print("\t1. Загрузить погоду для всех городов страны")
+# #     print("\t2. Загрузить погоду для определнного города(ов)")
+# #
+# #     print("\t0. Выйти")
+# #
+# #     answer = int(input("Укажите действие: ").strip())
+# #
+# #     if answer == 1:
+# #         print("1а. Вывести список стран")
+# #         print("1b. Указать страну")
+# #
+# #         while True:
+# #             answer2 = input("Укажите действие: ").strip()
+# #             if answer2 == "1a":
+# #                 pass
+# #                 #list_object.showCountryList()
+# #             elif answer2 == "1b":
+#                 print("")
